@@ -1,11 +1,11 @@
 package com.vanapp.controller;
 
 import com.vanapp.model.Usuario;
-import com.vanapp.service.UsuarioService;
+import com.vanapp.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -13,37 +13,30 @@ import java.util.List;
 public class UsuarioController {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
 
-    @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrar(@RequestBody Usuario usuario) {
-        try {
-            Usuario salvo = usuarioService.cadastrarUsuario(usuario);
-            return ResponseEntity.ok(salvo);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+    @PostMapping("/login")
+    public ResponseEntity<Usuario> login(@RequestBody Usuario loginRequest) {
+        String cpfLimpo = loginRequest.getCpf().trim();
+        String senhaLimpa = loginRequest.getSenha().trim();
+
+        System.out.println("--- TENTATIVA DE LOGIN ---");
+        System.out.println("CPF recebido: [" + cpfLimpo + "]");
+        
+        Optional<Usuario> usuario = usuarioRepository.findByCpf(cpfLimpo);
+        
+        if (usuario.isPresent()) {
+            Usuario u = usuario.get();
+            if (u.getSenha().trim().equals(senhaLimpa)) {
+                System.out.println("Login com sucesso!");
+                return ResponseEntity.ok(u);
+            } else {
+                System.out.println("Senha errada!");
+            }
+        } else {
+            System.out.println("CPF não encontrado.");
         }
+        
+        return ResponseEntity.status(401).build();
     }
-
-    @GetMapping("/passageiros")
-    public ResponseEntity<?> listarPassageiros() {
-        try {
-            List<Usuario> passageiros = usuarioService.listarPassageiros();
-            return ResponseEntity.ok(passageiros);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
-        try {
-            Usuario usuario = usuarioService.buscarPorId(id);
-            return ResponseEntity.ok(usuario);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-
 }

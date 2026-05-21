@@ -23,7 +23,7 @@ public class Usuario {
     private String senha;
 
     @Column(nullable = false)
-    private String tipo; // MOTORISTA ou PASSAGEIRO
+    private String tipo;
 
     @Column(nullable = false)
     private String enderecoCompleto;
@@ -31,31 +31,26 @@ public class Usuario {
     private Double latitude;
     private Double longitude;
 
+    // CONSTRUTOR VAZIO OBRIGATÓRIO
+    public Usuario() {}
+
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
-
     public String getTelefone() { return telefone; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
-
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
-
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
-
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }
-
     public String getEnderecoCompleto() { return enderecoCompleto; }
     public void setEnderecoCompleto(String enderecoCompleto) { this.enderecoCompleto = enderecoCompleto; }
-
     public Double getLatitude() { return latitude; }
     public void setLatitude(Double latitude) { this.latitude = latitude; }
-
     public Double getLongitude() { return longitude; }
     public void setLongitude(Double longitude) { this.longitude = longitude; }
 }
